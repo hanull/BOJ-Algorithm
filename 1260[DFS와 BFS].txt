@@ -1,0 +1,59 @@
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Scanner;
+public class Main {
+  static int n, m, v ;
+  static boolean[] check;
+  static int[][] arr;
+  
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+    n = sc.nextInt(); // 정점의 개수
+    m = sc.nextInt(); // 간선의 개수
+    v = sc.nextInt(); // 탐색을 시작할 정점의 번호
+    arr = new int[n+1][n+1]; // 인접행렬
+    check = new boolean[n+1]; // 방문했는지 확인
+    
+    int x, y; // 간선 연결하는 정점
+    for(int i=1; i<=m; i++) {
+      x= sc.nextInt();
+      y= sc.nextInt();
+      arr[x][y] = arr[y][x] =1;
+    }
+    dfs(v);
+    for(int j=1; j<=n; j++) {
+      check[j] = false;
+    }
+    System.out.println();
+    bfs(v);
+  }
+  
+  //DFS - 스택, 재귀
+  public static void dfs(int start) {
+    check[start] = true;
+    System.out.print(start +" ");
+    for(int j =1; j<=n; j++) {
+      if(arr[start][j]==1 && check[j]==false) {
+        dfs(j);
+      }
+    }
+  }
+  
+  //BFS - 큐
+  public static void bfs(int start) {
+    Queue<Integer> q = new LinkedList<Integer>();
+    q.add(start);
+    check[start] = true;
+    while (!q.isEmpty()) {
+      int temp = q.poll();
+      System.out.print(temp + " ");
+      for(int j=1; j<=n; j++) {
+        if(arr[temp][j]==1 && check[j]==false) {
+          q.add(j);
+          check[j] = true;
+        }
+      }
+    }
+    
+  }
+}
