@@ -1,0 +1,60 @@
+import java.io.*;
+import java.util.*;
+
+
+public class Main {
+  static int N,M;
+  static int[][] map;
+  static boolean[][] check;
+  static int[] dx = {-1,0,1,0};
+  static int[] dy = {0,1,0,-1};
+  static int[][] arr;
+  
+  public static class Pair{
+    int x, y ;
+    public Pair(int x, int y) {
+      this.x = x;
+      this.y = y;
+    }
+  }
+  
+  public static void bfs(int x, int y) {
+    Queue<Pair> q = new LinkedList<>();
+    q.add(new Pair(x, y));
+    check[x][y] = true;
+    arr[x][y] = 1;
+    while(!q.isEmpty()) {
+      Pair tmp = q.poll();
+      int nx = tmp.x;
+      int ny = tmp.y;
+      for(int i=0; i<4; i++) {
+        int tx = nx + dx[i];
+        int ty = ny + dy[i];
+        if(tx<0||tx>=N||ty<0||ty>=M) continue;
+        if(map[tx][ty]==1&&check[tx][ty]==false) {
+          q.add(new Pair(tx, ty));
+          check[tx][ty]=true;
+          arr[tx][ty] = arr[nx][ny]+1;
+        }
+      }
+      
+    }
+  }
+  public static void main(String[] args) throws IOException{
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    String[] line = br.readLine().split(" ");
+    N = Integer.parseInt(line[0]);
+    M = Integer.parseInt(line[1]);
+    map = new int[N][M];
+    check = new boolean[N][M];
+    arr = new int[N][M];
+    for(int i=0; i<N; i++) {
+      String[] line2 = br.readLine().split("");
+      for(int j=0; j<M; j++) {
+        map[i][j] = Integer.parseInt(line2[j]);
+      }
+    }
+    bfs(0,0);
+    System.out.println(arr[N-1][M-1]);
+  }
+}
