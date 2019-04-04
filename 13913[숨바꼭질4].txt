@@ -1,68 +1,57 @@
 import java.util.*;
 
 public class Main {
-  static int N,K;
   static boolean[] visited;
-  static int[] route;
+  static int[] cnt, from;
   public static void bfs(int x, int goal) {
-    Queue<Pair> q = new LinkedList<>();
-    q.add(new Pair(x, 0));
+    Queue<Integer> q = new LinkedList<>();
+    q.add(x);
     visited[x] = true;
-    route[x] = x;
+    cnt[x] = 0;
     while(!q.isEmpty()) {
-      Pair tmp = q.poll();
-      int point = tmp.p;
-      int cnt = tmp.cnt;
-      if(point==goal) {
-        System.out.println(cnt);
-        print(route, N, K);
+      int now = q.poll();
+      if(now==goal) {
+        System.out.println(cnt[now]);
+        print(now,x);
         break;
       }
-      if(point-1>=0&&point-1<=100000) {
-        if(visited[point-1]==false) {
-          q.add(new Pair(point-1, cnt+1));
-          visited[point-1]=true;
-          route[point-1] = point;
-        }
+      int next = now-1;
+      if(next>=0&&visited[next]==false) {
+        q.add(next);
+        visited[next] = true;
+        cnt[next]=cnt[now]+1;
+        from[next] = now;
       }
-      if(point+1>=0&&point+1<=100000) {
-        if(visited[point+1]==false) {
-          q.add(new Pair(point+1, cnt+1));
-          visited[point+1]=true;
-          route[point+1] = point;
-        }
+      next = now +1;
+      if(next<=100000&&visited[next]==false) {
+        q.add(next);
+        visited[next] = true;
+        cnt[next]=cnt[now]+1;
+        from[next] = now;
       }
-      if(point*2>=0&&point*2<=100000) {
-        if(visited[point*2]==false) {
-          q.add(new Pair(point*2, cnt+1));
-          visited[point*2]=true;
-          route[point*2] = point;
-        }
+      next = now*2;
+      if(next<=100000&&visited[next]==false) {
+        q.add(next);
+        visited[next] = true;
+        cnt[next]=cnt[now]+1;
+        from[next] = now;
       }
     }
   }
-  public static void print(int[] arr, int start, int k) {
-    // 경로 출력
-    if(start!=k) {
-      print(arr,start,route[k]);
+  public static void print(int x, int goal) {
+    if(x!=goal) {
+      print(from[x],goal);
     }
-    System.out.print(k+ " ");
-  }
-  public static class Pair{
-    int p, cnt;
-    public Pair(int p, int cnt) {
-      this.p = p;
-      this.cnt = cnt;
-    }
+    System.out.print(x+" ");
   }
   public static void main(String[] args) {
-    Scanner sc = new Scanner(System.in);
-    N = sc.nextInt();
-    K = sc.nextInt();
+    Scanner sc  = new Scanner(System.in);
+    int N = sc.nextInt();
+    int K = sc.nextInt();
     visited = new boolean[100001];
-    route = new int[100001];
-    // 수빈이 이동가능한 방법 : X-1, X+1, 2*X
+    cnt = new int[100001];
+    from = new int[100001];
     bfs(N,K);
+    
   }
-
 }
