@@ -1,0 +1,125 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+  static int[] dx = {1,-1,0,0};
+  static int[] dy = {0,0,1,-1};
+  
+  public static int[][] bfs(char[][] arr, int n, int m, int x, int y) {
+    int[][] dist = new int[n][m];
+    for(int a=0; a<n; a++) {
+      for(int b=0; b<m; b++) {
+        dist[a][b] = -1;
+      }
+    }
+    Queue<Pair> q = new LinkedList<>();
+    q.add(new Pair(x, y));
+    dist[x][y] = 0;
+    while(!q.isEmpty()) {
+      Pair tmp = q.poll();
+      int tx = tmp.x;
+      int ty = tmp.y;
+      for(int i=0; i<4; i++) {
+        int nx = tx + dx[i];
+        int ny = ty + dy[i];
+        if(nx<0||nx>=n||ny<0||ny>=m) continue;
+        if(arr[nx][ny]=='x') continue;
+        if(dist[nx][ny]!=-1) continue;
+        q.add(new Pair(nx, ny));
+        dist[nx][ny] = dist[tx][ty] + 1;
+      }
+    }
+    return dist;
+  }
+  
+  public static boolean next_permutation(int[] arr) {
+    int i = arr.length - 1;
+    while(i>0&&arr[i-1]>=arr[i]) {
+      i-=1;
+    }
+    if(i<=0) {
+      return false;
+    }
+    int j = arr.length-1;
+    while(arr[i-1]>=arr[j]) {
+      j-=1;
+    }
+    int tmp = arr[i-1];
+    arr[i-1] = arr[j];
+    arr[j] = tmp;
+    j = arr.length-1;
+    while(i<j) {
+      int temp = arr[i];
+      arr[i] = arr[j];
+      arr[j] = temp;
+      i++; j--;
+    }
+    return true;
+  }
+  
+  public static class Pair{
+    int x, y;
+    public Pair(int x, int y) {
+      this.x = x;
+      this.y = y;
+    }
+  }
+  public static void main(String[] args) throws Exception{
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    while(true) {
+      String[] s = br.readLine().split(" ");
+      int w = Integer.parseInt(s[0]);
+      int h = Integer.parseInt(s[1]);
+      if(w==0&&h==0) break;
+      char[][] map = new char[h][w];
+      // 로봇의 시작위치(o), 더러운칸(*)의 정점을 저장.
+      ArrayList<Pair> arr = new ArrayList<>();
+      arr.add(new Pair(0, 0));
+      for(int i=0; i<h; i++) {
+        String str = br.readLine();
+        for(int j=0; j<w; j++) {
+          char c = str.charAt(j);
+          map[i][j] = c;
+          if(c=='o') {
+            arr.set(0, new Pair(i, j));
+          }else if(c=='*') {
+            arr.add(new Pair(i, j));
+          }
+        }
+      }
+      // 각 정점에서 이동할 수 있는 거리 구하기. 0->1, 0->2 ...
+      int len = arr.size();
+      int[][] dist = new int[len][len];
+      boolean check = true;
+      for(int i=0; i<len; i++) {
+        int[][] d = bfs(map, h, w, arr.get(i).x, arr.get(i).y);
+        for(int j=0; j<len; j++) {
+          dist[i][j] = d[arr.get(j).x][arr.get(j).y];
+          if(dist[i][j]==-1) {
+            check=false;
+          }
+        }
+      }
+      // 방문할 수 없는 더러운칸이 있으면 -1출력
+      if(check==false) {
+        System.out.println("-1");
+        continue;
+      }
+      // 더러운칸(*)을 방문 할 수 있는 모든 순서를 구한다.
+      int[] dirty = new int[len-1];
+      for(int i=0; i<len-1; i++) {
+        dirty[i] = i+1;
+      }
+      int result = Integer.MAX_VALUE;
+      do {
+        int now = dist[0][dirty[0]]; //로봇 시작위치 부터  첫번째 더러운칸으로 이동하는 거리. 
+        for(int i=0; i<len-2; i++) {
+          now += dist[dirty[i]][dirty[i+1]];
+        }
+        if(now<result) result = now;
+      }while(next_permutation(dirty));
+      System.out.println(result);
+      
+    }// end tastcase();
+  }
+}
