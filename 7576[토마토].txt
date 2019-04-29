@@ -1,6 +1,7 @@
 import java.io.*;
 import java.util.*;
 
+
 public class Main{
   static int M,N;
   static boolean[][] check;
