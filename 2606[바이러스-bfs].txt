@@ -6,7 +6,7 @@ public class Main {
   static boolean[] visited;
   static int[][] map;
   static int cnt ;
-
+ 
   public static void bfs(int start) {
     Queue<Integer> q = new LinkedList<>();
     q.add(start);
