@@ -36,6 +36,7 @@ public class Main {
       int b = Integer.parseInt(line[1]);
       map[a][b] = 1;
       map[b][a] = 1;
+
     }
     bfs(1);
     System.out.println(cnt);
