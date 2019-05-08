@@ -20,6 +20,7 @@ public class Main {
     System.out.println(total);
   }
   
+
   // 원하는 갯수의 원소를 구하면 그때의 원소의합이 S와 같은지 비교
   public static void go(int i, int cnt, int hap, int index) {
     if(i==cnt) {
