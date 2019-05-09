@@ -5,7 +5,7 @@ public class Main {
   public static int go(String str) {
     int result =0;
     for(int i=0; i<3; i++) {
-      int tmp = str.charAt(i)-48;
+      int tmp = str.charAt(i)-'0';
       result += tmp*dx[i];
     }
     return result;
