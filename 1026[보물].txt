@@ -1,0 +1,54 @@
+import java.util.*;
+
+public class Main {
+  static int[] A, B;
+  static int t;
+  public static boolean next_permutation() {
+    int i = A.length-1; int j = A.length-1;
+    while(i>0&&A[i]<=A[i-1]) {
+      i -=1;
+    }if(i<=0) return false;
+    
+    while(A[i-1]>=A[j]) {
+      j-=1;
+    }
+
+    int temp = A[j];
+    A[j] = A[i-1];
+    A[i-1] = temp;
+
+    j=A.length-1;
+    while(i<j) {
+      int tmp = A[j];
+      A[j] = A[i];
+      A[i] = tmp;
+      i+=1; j-=1;
+    }
+    return true;
+  }
+
+  public static void main(String[] args){
+    Scanner sc = new Scanner(System.in);
+    t = sc.nextInt();
+    A = new int[t];
+    B = new int[t];
+    for(int i=0; i<t; i++) {
+      A[i] = sc.nextInt();
+    }
+    for(int i=0; i<t; i++) {
+      B[i] = sc.nextInt();
+    }
+    Arrays.sort(A);
+    int result = Integer.MAX_VALUE;
+    do {
+      int S=0;
+      for(int i=0; i<t; i++) {
+        S = (A[i]*B[i]) + S;
+      }
+      if(S<result) {
+        result = S;
+      }
+    }while(next_permutation());
+    System.out.println(result);
+  }
+}
