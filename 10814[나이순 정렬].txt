@@ -1,6 +1,7 @@
 import java.util.*;
 
 public class Main {
+
   public static class Pair implements Comparable<Pair>{
     int age;
     String name;
