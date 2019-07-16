@@ -6,7 +6,7 @@ public class Main{
   static int[][] map;
   static int Max = Integer.MIN_VALUE;
   
-  public static void merge(int index) {
+  public static void shift(int index) {
     Queue<Integer> q = new LinkedList<>();
     switch (index) {
       // 위
@@ -135,8 +135,8 @@ public class Main{
     
     // 위,아래,오른쪽, 왼쪽으로 합치기
     for(int i=0; i<4; i++) {
-      // merge
-      merge(i);
+      // 이동(상,하,좌,우)
+      shift(i);
       dfs(cnt+1);
       // 원래 정보로 복구
       for(int p=0; p<N; p++) {
