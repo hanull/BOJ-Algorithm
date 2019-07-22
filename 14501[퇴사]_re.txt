@@ -1,23 +1,25 @@
-package baekjoon;
-
 import java.io.*;
 import java.util.*;
 
-public class Ex14501_퇴사 {
+public class Main {
   static int n;
   static int[] time;
   static int[] money;
   static int max = Integer.MIN_VALUE;
-  public static void dfs(int day, int total) {
+  public static void dfs(int day, int total, int last) {
+    // 상담 가능한 날짜를 초과하면, 
+    // 마지막 상담을 빼고 비교한다.
     if(day>=n) {
+      if(day>n) {
+        total -= last;
+      }
       if(total>max) max = total;
       return;
     }
-    for(int i=day; i<n; i++) {
-      if(day+time[i]<n) {
-        dfs(day+time[i],total+money[i]);
-      }
-    }
+    // 상담 가능 할 때
+    dfs(day+time[day],total+money[day],money[day]);
+    // 상담 하지 않을 때
+    dfs(day+1,total,last);
   }
   public static void main(String[] args) throws Exception{
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -29,9 +31,7 @@ public class Ex14501_퇴사 {
       time[i] = Integer.parseInt(st.nextToken());
       money[i] = Integer.parseInt(st.nextToken());
     }
-    for(int i=0; i<n; i++) {
-      dfs(time[i],money[i]);
-    }
+    dfs(0,0,0);
     System.out.println(max);
   }
 }
