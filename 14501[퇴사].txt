@@ -26,5 +26,4 @@ public class Main {
     go(hap+P[idx], idx+T[idx]);
     go(hap, idx+1);
   }
- 
 }
