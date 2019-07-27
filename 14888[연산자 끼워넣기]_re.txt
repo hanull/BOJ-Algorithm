@@ -24,7 +24,6 @@ public class Main {
       }
     }
   }
-  
   public static void cal() {
     int total=num[0];
     for(int i=0; i<n-1; i++) {
@@ -41,7 +40,6 @@ public class Main {
     if(total>max) max=total;
     if(total<min) min=total;
   }
-  
   public static void main(String[] args) throws Exception{
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     n = Integer.parseInt(br.readLine());
