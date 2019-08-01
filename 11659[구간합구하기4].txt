@@ -1,7 +1,8 @@
+package baekjoon;
+
 import java.util.Scanner;
 
 public class Main {
-  
   
   public static void main(String[] args) {
     Scanner sc = new Scanner(System.in);
@@ -16,11 +17,7 @@ public class Main {
     while(m-->0) {
       int a=sc.nextInt();
       int b=sc.nextInt();
-      int result=0;
-      for(int i=a; i<=b; i++) {
-        result=arr[b]-arr[a-1];
-      }
-      System.out.println(result);
+      System.out.println(arr[b]-arr[a-1]);
     }
     
   }
