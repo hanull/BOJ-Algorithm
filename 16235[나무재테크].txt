@@ -1,0 +1,91 @@
+package baekjoon;
+
+import java.io.*;
+import java.util.*;
+
+public class Ex16235_나무재테크 {
+  static int n,m,k;
+  static int[][] A,map;
+  static ArrayList<Pair> tree;
+  static int[] dx= {-1,-1,-1,0,0,1,1,1};
+  static int[] dy= {-1,0,1,-1,-1,-1,0,1};
+  public static void go() {
+    while(k-->0) {
+      Queue<Pair> q = new LinkedList<>(); // 죽은 나무 저장을 위한
+      for(int i=0; i<tree.size(); i++) { // 봄
+        int x = tree.get(i).x;
+        int y = tree.get(i).y;
+        int age=tree.get(i).age;
+        if(map[x][y]-age<0) {
+          tree.remove(i);
+          q.add(new Pair(x,y,age/2));
+        }else {
+          map[x][y]-=age;
+          tree.set(i, new Pair(x,y,age+1));
+        }
+      }
+      while(!q.isEmpty()) { // 여름, 양분+=죽은나무/2
+        Pair tmp=q.poll();
+        int x=tmp.x;
+        int y=tmp.y;
+        int age=tmp.age;
+        map[x][y]+=age;
+      }
+      
+      // 가을, 인접한 칸에 나무가 번식
+      for(int i=0; i<tree.size(); i++) {
+        int tx=tree.get(i).x;
+        int ty=tree.get(i).y;
+        int age=tree.get(i).age;
+        for(int j=0; j<8; j++) {
+          int nx=tx+dx[j];
+          int ny=ty+dy[j];
+          int nage=age*5;
+          if(nx<0||nx>n-1||ny<0||ny>n-1) continue;
+          tree.add(new Pair(nx,ny,nage));
+        }
+      }
+      
+      // 겨울, 땅에 양분을 추가
+      for(int i=0; i<n; i++) {
+        for(int j=0; j<n; j++) {
+          map[i][j]+=A[i][j];
+        }
+      }
+      System.out.println("TREE"+tree.size());
+    }
+  }
+  public static class Pair{
+    int x,y,age;
+    public Pair(int x, int y,int age) {
+      this.x=x;
+      this.y=y;
+      this.age=age;
+    }
+  }
+  public static void main(String[] args) throws Exception{
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    n=Integer.parseInt(st.nextToken());
+    m=Integer.parseInt(st.nextToken());
+    k=Integer.parseInt(st.nextToken());
+    A=new int[n][n];
+    map=new int[n][n];
+    for(int i=0; i<n; i++) {
+      st=new StringTokenizer(br.readLine());
+      for(int j=0; j<n; j++) {
+        A[i][j]=Integer.parseInt(st.nextToken());
+        map[i][j]=5;
+      }
+    }
+    tree=new ArrayList<>();
+    for(int i=0; i<m; i++) {
+      st=new StringTokenizer(br.readLine());
+      int x=Integer.parseInt(st.nextToken())-1;
+      int y=Integer.parseInt(st.nextToken())-1;
+      int age=Integer.parseInt(st.nextToken());
+      tree.add(new Pair(x, y, age));
+    }
+    go();
+  }
+}
