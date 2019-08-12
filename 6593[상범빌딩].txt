@@ -38,6 +38,7 @@ public class Main {
       }
     }
   }
+
   public static class Pair{
     int f,x,y;
     public Pair(int f, int x, int y) {
@@ -46,6 +47,7 @@ public class Main {
       this.y=y;
     }
   }
+
   public static void main(String[] args) {
     Scanner sc = new Scanner(System.in);
     while(true) {
