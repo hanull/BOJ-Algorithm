@@ -2,77 +2,108 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-  static int n,t;
-  static int[] con;
-  static int result = Integer.MIN_VALUE;
-  static String[] word;
-  public static boolean next_permutation() {
-    int i = t-1;
-    while(i>0&&con[i]>=con[i-1]) i-=1;
-    if(i<=0) return false;
-    int j = t-1;
-    while(con[j]>=con[i-1]) j-=1;
-    int temp = con[j];
-    con[j] = con[i-1];
-    con[i-1] = temp;
-    j=t-1;
-    while(i<j) {
-      int tmp = con[i];
-      con[i] = con[j];
-      con[j] = tmp;
-      i++; j--;
-    }
-    return true;
+  static int n,m;
+  static char[][] map, copymap;
+  static int result = Integer.MAX_VALUE;
+  public static void solve() {
+    // 8*8 체스판 선택
+    for(int i=0; i<n-7; i++) {
+      for(int j=0; j<m-7; j++) {
+        int total=go(i,j);
+        if(total<result) result=total;
+      }
+    }   
   }
   
-  public static int cal(ArrayList<Character> letters) {
-    int k = letters.size();
-    int total = 0;
-    // 알파벳별로 값 저장
-    int[] tmp = new int[26];
-    for(int i=0; i<k; i++) {
-      tmp[letters.get(i)-65] = con[i];
-    }
-    for(String s : word) {
-      int sum=0;
-      for(char x : s.toCharArray()) {
-        //System.out.println("x:"+x+" " +tmp[x-65]);
-        sum = sum * 10 + tmp[x-65]; 
+  public static int go(int x, int y) {
+    copymap = new char[8][8];
+    for(int i=x; i<x+8; i++) {
+      for(int j=y; j<y+8; j++) {
+        copymap[i-x][j-y]=map[i][j];
       }
-      total += sum;
     }
-    return total;
+    // 맨 왼쪽 위칸 = 흰색
+    int totalA=0;
+    for(int i=0; i<8; i=i+2) {
+      for(int j=0; j<8; j=j+2) {
+        if(copymap[i][j]=='B') {
+          totalA++;
+        }
+      }
+    }
+    for(int i=0; i<8; i=i+2) {
+      for(int j=1; j<8; j=j+2) {
+        if(copymap[i][j]=='W') {
+          totalA++;
+        }
+      }
+    }
+    for(int i=1; i<8; i=i+2) {
+      for(int j=0; j<8; j=j+2) {
+        if(copymap[i][j]=='W') {
+          totalA++;
+        }
+      }
+    }
+    for(int i=1; i<8; i=i+2) {
+      for(int j=1; j<8; j=j+2) {
+        if(copymap[i][j]=='B') {
+          totalA++;
+        }
+      }
+    }
+    
+    // 맨 왼쪽 위칸 = 검은색
+    int totalB=0;
+    for(int i=0; i<8; i=i+2) {
+      for(int j=0; j<8; j=j+2) {
+        if(copymap[i][j]=='W') {
+          totalB++;
+        }
+      }
+    }
+    for(int i=0; i<8; i=i+2) {
+      for(int j=1; j<8; j=j+2) {
+        if(copymap[i][j]=='B') {
+          totalB++;
+        }
+      }
+    }
+    for(int i=1; i<8; i=i+2) {
+      for(int j=0; j<8; j=j+2) {
+        if(copymap[i][j]=='B') {
+          totalB++;
+        }
+      }
+    }
+    for(int i=1; i<8; i=i+2) {
+      for(int j=1; j<8; j=j+2) {
+        if(copymap[i][j]=='W') {
+          totalB++;
+        }
+      }
+    }
+    if(totalA<totalB) {
+      return totalA;
+    }else {
+      return totalB;
+    }
   }
+  
   public static void main(String[] args) throws Exception{
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    n = Integer.parseInt(br.readLine());
-    word = new String[n];
-    HashSet<Character> letter = new HashSet<>();
-    // n개의 단어를 저장, 알파벳 중복을 제거. 
-    for(int i=0; i<n; i++) {
-      String line = br.readLine();
-      word[i] = line;
-      for(char x : line.toCharArray()) {
-        letter.add(x);
-      }
-    }
-    // 정렬을 위해 리스트로 변환해준다.
-    ArrayList<Character> letters = new ArrayList<>(letter);
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    n=Integer.parseInt(st.nextToken());
+    m=Integer.parseInt(st.nextToken());
+    map = new char[n][m];
     
-    // 알바벳별 숫자를 정해준다. 
-    // *최대값을 구하므로, 9~(9-k) 까지의 값을 이용한다.
-    t = letters.size();
-    con = new int[t];
-    for(int i=9; i>(9-t); i--) {
-      con[9-i] = i;
-    }
-    // next_permutation 이용해 최대값을 구한다.
-    do {
-      int max = cal(letters);
-      if(max>result) {
-        result = max;
+    for(int i=0; i<n; i++) {
+      String[] line = br.readLine().split("");
+      for(int j=0; j<m; j++) {
+        map[i][j]=line[j].charAt(0);
       }
-    }while(next_permutation());
+    }
+    solve();
     System.out.println(result);
   }
 }
