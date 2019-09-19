@@ -1,31 +1,63 @@
+import java.io.*;
 import java.util.*;
 
-public class Main {
-
-  public static void main(String[] args) {
-    Scanner sc = new Scanner(System.in);
-    String str = sc.next();
-    str = str.toLowerCase();
-    int[] alpa = new int[26];
-    int[] tmp = new int[26];
-    for(int i=0; i<str.length(); i++) {
-      char ch = str.charAt(i);
-      int idx = ch-'a';
-      alpa[idx]+=1;
-      tmp[idx] = alpa[idx];
-    }
-    int result =0;
-    Arrays.sort(tmp);
-    for(int i=0; i<26; i++) {
-      if(alpa[i]==tmp[25]) {
-        result = i;
-        break;
+public class Solution {
+  static int T,n;
+  static int[][] map,dist;
+  static int min;
+  static boolean[][] visited;
+  static int[] dx= {-1,1,0,0};
+  static int[] dy= {0,0,-1,1};
+  
+  public static void bfs() {
+    // 모든 정점을 큐에 추가
+    // 우선순위 큐사용
+    Queue<Pair> q = new LinkedList<>();
+    q.add(new Pair(0, 0, 0));
+    while(!q.isEmpty()) {
+      Pair tmp = q.poll();
+      int tx=tmp.x;
+      int ty=tmp.y;
+      int time=tmp.time;
+      for(int i=0; i<4; i++) {
+        int nx=tx+dx[i];
+        int ny=ty+dy[i];
+        if(nx<0||nx>n-1||ny<0||ny>n-1) continue;
+        if(visited[nx][ny]==false||(dist[nx][ny]>time+map[nx][ny])) {
+          dist[nx][ny]=time+map[nx][ny];
+          q.add(new Pair(nx, ny, time+map[nx][ny]));
+          visited[nx][ny]=true;
+        }
       }
     }
-    if(tmp[25]==tmp[24]) {
-      System.out.println("?");
-    }else {
-      System.out.println((char)(result+'A'));
+  }
+  public static class Pair{
+    int x,y,time;
+    public Pair(int x, int y, int time) {
+      this.x=x;
+      this.y=y;
+      this.time=time;
     }
+    
+  }
+  public static void main(String[] args) throws Exception{
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    T = Integer.parseInt(br.readLine());
+    for(int c=1; c<=T; c++) {
+      n=Integer.parseInt(br.readLine());
+      map=new int[n][n];
+      dist=new int[n][n];
+      visited=new boolean[n][n];
+      min = Integer.MAX_VALUE;
+      for(int i=0; i<n; i++) {
+        String[] str = br.readLine().split("");
+        for(int j=0; j<n; j++) {
+          map[i][j]=Integer.parseInt(str[j]);
+        }
+      }
+      bfs();
+      System.out.println("#"+c+" "+dist[n-1][n-1]);
+      
+    } // end testcase; 
   }
 }
