@@ -29,6 +29,7 @@ public class Solution {
       }
     }
   }
+
   public static class Pair{
     int x,y,time;
     public Pair(int x, int y, int time) {
@@ -38,6 +39,7 @@ public class Solution {
     }
     
   }
+
   public static void main(String[] args) throws Exception{
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     T = Integer.parseInt(br.readLine());
