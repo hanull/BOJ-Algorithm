@@ -3,6 +3,7 @@ import java.util.*;
 public class Main {
   static int n,l;
   static int[] point;
+
   public static void main(String[] args) {
     Scanner sc = new Scanner(System.in);
     n=sc.nextInt();
