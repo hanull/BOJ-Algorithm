@@ -39,6 +39,7 @@ public class Main {
       list[x].add(y);
       list[y].add(x);
     }
+
     dfs(p1,0);
     if(result==Integer.MAX_VALUE) {
       System.out.println("-1");
