@@ -1,73 +1,68 @@
-package baekjoon;
-
 import java.io.*;
 import java.util.*;
 
-public class Ex14503_로봇청소기 {
+public class Main {
   static int n,m;
   static int[][] map;
   static int[] dx= {-1,0,1,0};  // 북, 동, 남, 서
   static int[] dy= {0,1,0,-1};
   static boolean[][] visited;
   static int cnt=1;
-  static boolean flag=false;
-  static boolean pass=false;
+
+  
   public static void move(int x, int y, int d) {
     Queue<Pair> q = new LinkedList<>();
     q.add(new Pair(x, y, d));
-    visited[x][y]=true; 
-    map[x][y]=1;
-    int direction=0;
+    visited[x][y]=true;
+    map[x][y]=2;
     while(!q.isEmpty()) {
       Pair tmp = q.poll();
       int tx=tmp.x;
       int ty=tmp.y;
       int td=tmp.d;
-      System.out.println(flag+" "+tx+" "+ty+" "+td);
+      
+      int nx=0;
+      int ny=0;
+      int n_direction=td;
+      boolean flag=false;
+      
       for(int i=0; i<4; i++) {
-        if(flag) {
-          flag=false;
-          pass=false;
-          td=turn(td,1); // 반대방향으로 180도 회전
-        }else {
-          td=turn(td,0); // 왼쪽으로 90도 회전
-        }
-        int nx=tx+dx[td];
-        int ny=ty+dy[td];
+        n_direction=turn(n_direction,0);
+        nx=tx+dx[n_direction];
+        ny=ty+dy[n_direction];
         if(nx<0||nx>n-1||ny<0||ny>m-1) continue;
-        //if(visited[nx][ny]) continue;
-        if(map[nx][ny]==1) continue;
-        while(true) { // 벽을 만날 때 까지 이동
+        if(map[nx][ny]==0&&visited[nx][ny]==false) { // 청소할 수 있는 칸이 존재,
           cnt++;
-          map[nx][ny]=1;
+          map[nx][ny]=2;
           visited[nx][ny]=true;
-          nx+=dx[td];
-          ny+=dy[td];
-          if(nx<0||nx>n-1||ny<0||ny>m-1) break;
-          if(map[nx][ny]==1) {
-            q.add(new Pair(nx-dx[td], ny-dy[td], td));
-            flag=true;
-            pass=true;
-            break;
-          }
+          flag=true;
+          q.add(new Pair(nx, ny, n_direction));
+          break;
         }
-        if(pass) break;
+      }
+      if(!flag) { // 청소할 수 있는 칸이 없을 때, 후진
+        n_direction=turn(td,1);
+        nx=tx+dx[n_direction];
+        ny=ty+dy[n_direction];
+        if(nx<0||nx>n-1||ny<0||ny>m-1) continue;
+        if(map[nx][ny]==0||map[nx][ny]==2) {
+          q.add(new Pair(nx, ny, td));
+        }
       }
     }
-    
   }
-  
-  public static int turn(int d, int f) {
-    if(f==0) { // 90도 왼쪽으로 회전
+
+  public static int turn(int d, int how) {
+    if(how==0) {
       if(d==0) d=3;
       else if(d==3) d=2;
       else if(d==2) d=1;
       else d=0;
     }
-    else { // 반대 방향으로 회전
+    else {
       if(d==0) d=2;
-      else if(d==2) d=0;
       else if(d==3) d=1;
+      else if(d==2) d=0;
       else d=3;
     }
     return d;
@@ -100,6 +95,7 @@ public class Ex14503_로봇청소기 {
       }
     }
     move(x,y,d);
+    
     System.out.println(cnt);
   }
 }
