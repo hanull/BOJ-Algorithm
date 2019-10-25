@@ -1,38 +1,37 @@
 import java.io.*;
 import java.util.*;
 
-public class Main {
+public class Main{
   static int n,l;
-  static int[][] map1, map2; // 가로 맵, 세로 맵
+  static int[][] map1, map2;
+  static boolean[] slop;
   static int result=0;
-  static int[] tmp;
   
   public static void isPossible(int index, int[][] arr) {
-    tmp=new int[n];
+    slop=new boolean[n];
     for(int i=0; i<n-1; i++) {
-      // 현재의 높이와 다음의 높이가 다를 경우에만 체크해준다.
-      if(arr[index][i]!=arr[index][i+1]) {
-        int diff = arr[index][i]-arr[index][i+1];
-        if(diff!=1&&diff!=-1) return; // 높이의 차이가 1보다 크면 갈 수 없는 길이다.
-        if(diff==-1) { // 높은 칸을 만날 경우. 왼쪽 경사로
-          for(int j=0; j<l; j++) {
-            if(i-j<0||tmp[i-j]==1) return;
-            if(arr[index][i]==arr[index][i-j]) tmp[i-j] = 1;
-            else return;
+      int diff = arr[index][i]-arr[index][i+1];
+      if(diff!=0) {
+        if(diff!=1 && diff!=-1) return;
+        
+        if(diff==1) { // 오른쪽 아래로 경사로가 있음
+          for(int j=1; j<=l; j++) {
+            if(i+j>n-1||slop[i+j]==true) return;
+            if(arr[index][i]-1!=arr[index][i+j]) return;
+            slop[i+j]=true;
           }
         }
-        else { // 낮은 칸을 만날 경우. 오른쪽 경사로
-          for(int j=1; j<=l; j++) {
-            if(i+j>=n||tmp[i+j]==1) return;
-            if(arr[index][i]-1==arr[index][i+j]) tmp[i+j] = 1;
-            else return;
+        else { // 왼쪽 아래로 경사로가 있음
+          for(int j=0; j<l; j++) {
+            if(i-j<0||slop[i-j]==true) return;
+            if(arr[index][i]!=arr[index][i-j]) return;
+            slop[i-j]=true;
           }
         }
       }
     }
     result++;
-  } 
-  
+  }
   public static void main(String[] args) throws Exception{
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     StringTokenizer st = new StringTokenizer(br.readLine());
@@ -47,8 +46,8 @@ public class Main {
       }
     }
     for(int i=0; i<n; i++) {
-      isPossible(i,map1); // 가로줄
-      isPossible(i,map2); // 세로줄
+      isPossible(i,map1);
+      isPossible(i,map2);
     }
     System.out.println(result);
   }
