@@ -1,42 +1,106 @@
+import java.io.*;
 import java.util.*;
 
 public class Main {
-  static int n;
-  static boolean[] num;
-  static int result=0;
-  static ArrayList<Integer> list=new ArrayList<>();
-
-  public static void main(String[] args) {
-    Scanner sc = new Scanner(System.in);
-    n=sc.nextInt();
-    num=new boolean[4000001];
-    for(int i=2; i<=Math.sqrt(4000000); i++) {
-      if(num[i]) continue;
-      for(int j=i*2; j<=4000000; j+=i) {
-        if(j%i==0) {
-          num[j]=true;
-          continue;
+  static int n,k,l;
+  static int[][] map;
+  static int[] dx= {1,-1,0,0}; // 남, 북, 동, 서
+  static int[] dy= {0,0,1,-1};
+  static boolean[][] visited;
+  static ArrayList<how> list = new ArrayList<>();
+  static Deque<Pair> snake = new LinkedList<>();
+  static int time=0;
+  
+  public static void move(int x, int y, int d) {
+    snake.addFirst(new Pair(x, y, d));
+    snake.addLast(new Pair(x, y, d));
+    visited[x][y]=true;
+    for(int i=0; i<list.size(); i++) {
+      how tmp=list.get(i);
+      int sec=tmp.x;
+      char LD=tmp.d;
+      
+      Pair head=snake.pollFirst();
+      int headX=head.x;
+      int headY=head.y;
+      int headD=head.d;
+      
+      while(sec-->0) {
+        headX+=dx[headD];
+        headY+=dy[headD];
+        if(headX<0||headX>n-1||headY<0||headY>n-1) return;
+        if(visited[headX][headY]) return;
+        
+        time++;
+        visited[headX][headY]=true;
+        snake.addLast(new Pair(headX, headY, headD));
+        
+        if(map[headX][headY]==1) { // 이동한 칸에 사과가 존재할 때
+          map[headX][headY]=0;
         }
-      }
+        else {  // 이동한 칸에 사과가 없을 때
+          Pair tail = snake.pollFirst();
+          visited[tail.x][tail.y]=false;
+        }
+      }// end while()
+      int next_headD=turn(headD,LD);
+      snake.addFirst(new Pair(headX, headY, next_headD));
+    }// end for()
+  }
+  
+  public static int turn(int d, char h) {
+    if(h=='L') {
+      if(d==0) d=2;
+      else if(d==1) d=3;
+      else if(d==2) d=1;
+      else d=0;
     }
-    for(int i=2; i<=n; i++) {
-      if(num[i]==false) list.add(i);
-    } 
-    int left=0;
-    int right=0;
-    int sum=list.get(0);
-    while(left<=right&&right<list.size()) {
-      //System.out.println("left: ("+left+","+list.get(left)+")"+" right: ("+right+","+list.get(right)+") sum: "+sum);
-      if(sum==n) result++;
-      if(sum<n) {
-        right++;
-        sum+=list.get(right);
-      }
-      else {
-        sum-=list.get(left);
-        left++;
-      }
+    else if(h=='D') {
+      if(d==0) d=3;
+      else if(d==1) d=2;
+      else if(d==2) d=0;
+      else d=1;
     }
-    System.out.println(result);
+    return d;
+  }
+  public static class Pair{
+    int x,y,d;
+    public Pair(int x, int y, int d) {
+      this.x=x;
+      this.y=y;
+      this.d=d;
+    }
+  }
+  public static class how{
+    int x;
+    char d;
+    public how(int x, char d) {
+      this.x=x;
+      this.d=d;
+    }
+  }
+  
+  public static void main(String[] args) throws Exception{
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in ));
+    n=Integer.parseInt(br.readLine());
+    k=Integer.parseInt(br.readLine());
+    map=new int[n][n];
+    visited=new boolean[n][n];
+    for(int i=0; i<k; i++) {
+      StringTokenizer st= new StringTokenizer(br.readLine());
+      int x=Integer.parseInt(st.nextToken())-1;
+      int y=Integer.parseInt(st.nextToken())-1;
+      map[x][y]=1;
+    }
+    
+    l=Integer.parseInt(br.readLine());
+    for(int i=0; i<l; i++) {
+      StringTokenizer st= new StringTokenizer(br.readLine());
+      int x=Integer.parseInt(st.nextToken());
+      char d=st.nextToken().charAt(0);
+      list.add(new how(x, d));
+    }
+    move(0,0,2);
+    System.out.println(time);
   }
 }
